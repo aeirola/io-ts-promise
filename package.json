@@ -1,0 +1,32 @@
+{
+  "name": "io-ts-promise",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "npm run lint && npm run test:js",
+    "lint": "npm run lint:prettier && npm run lint:tslint && npm run lint:typescript",
+    "lint:prettier": "prettier --list-different 'src/*.ts' 'test/*.ts'",
+    "lint:tslint": "tslint-config-prettier-check ./tslint.json && tslint 'src/*.ts' 'test/*.ts'",
+    "lint:typescript": "tsc --noEmit",
+    "test:js": "mocha -r ts-node/register test/*.ts"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "io-ts": "^1.8.2"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/chai-as-promised": "^7.1.0",
+    "@types/mocha": "^5.2.6",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^6.0.1",
+    "prettier": "^1.16.4",
+    "ts-node": "^8.0.2",
+    "tslint": "^5.12.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.3.3333"
+  }
+}
