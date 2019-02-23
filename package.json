@@ -14,14 +14,17 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "deep-equal": "^1.0.1",
     "io-ts": "^1.8.2"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
+    "@types/deep-equal": "^1.0.1",
     "@types/mocha": "^5.2.6",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "fp-ts": "^1.14.2",
     "mocha": "^6.0.1",
     "prettier": "^1.16.4",
     "ts-node": "^8.0.2",
