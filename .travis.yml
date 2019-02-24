@@ -1,0 +1,9 @@
+dist: xenial
+language: node_js
+node_js:
+  - lts/boron # v6
+  - lts/carbon # v8
+  - lts/dubnium # v10
+  - lts/*
+  - node
+cache: npm
