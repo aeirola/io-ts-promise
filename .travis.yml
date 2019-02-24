@@ -1,0 +1,9 @@
+dist: xenial
+language: node_js
+node_js:
+  - lts/argon
+  - lts/boron
+  - lts/carbon
+  - lts/dubnium
+  - lts/*
+  - node
