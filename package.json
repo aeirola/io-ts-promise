@@ -1,18 +1,36 @@
 {
   "name": "io-ts-promise",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
+  "description": "io-ts for developers who like Promises",
+  "keywords": [
+    "io-ts",
+    "promise"
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "test": "npm run lint && npm run test:js",
     "lint": "npm run lint:prettier && npm run lint:tslint && npm run lint:typescript",
     "lint:prettier": "prettier --list-different 'src/*.ts' 'test/*.ts'",
     "lint:tslint": "tslint-config-prettier-check ./tslint.json && tslint 'src/*.ts' 'test/*.ts'",
     "lint:typescript": "tsc --noEmit",
-    "test:js": "mocha -r ts-node/register test/*.ts"
+    "test:js": "mocha -r ts-node/register test/*.ts",
+    "build": "tsc",
+    "prepublish": "npm run build"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aeirola/io-ts-promise.git"
+  },
+  "author": "Axel Havukangas <axel@havukangas.fi>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aeirola/io-ts-promise/issues"
+  },
+  "homepage": "https://github.com/aeirola/io-ts-promise",
   "dependencies": {
     "deep-equal": "^1.0.1",
     "io-ts": "^1.8.2"
