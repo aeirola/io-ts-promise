@@ -36,11 +36,34 @@ export function decode<Output, Input>(
         Promise<Output>
       >(null, type);
     default:
-      const result = type.decode(value || arguments[2]);
-      return result.fold(
-        () => Promise.reject(new Error(PathReporter.report(result).join('\n'))),
-        decodedValue => Promise.resolve(decodedValue),
-      );
+      return type
+        .decode(value || arguments[2])
+        .fold(
+          errors => Promise.reject(new DecodeError(errors)),
+          decodedValue => Promise.resolve(decodedValue),
+        );
+  }
+}
+
+/**
+ * Checks whether error was produced by @see decode due to invalid data.
+ */
+export function isDecodeError(error: unknown): error is DecodeError {
+  return error instanceof DecodeError;
+}
+
+/**
+ * Custom error class which is rejected by the @see decode function
+ * when decoding fails due to invalid data.
+ */
+export class DecodeError implements Error {
+  public name = 'DecodeError';
+  public message: string;
+  public errors: t.Errors;
+
+  constructor(errors: t.Errors) {
+    this.message = PathReporter.report(t.failures(errors)).join('\n');
+    this.errors = errors;
   }
 }
 

@@ -21,6 +21,10 @@ describe('io-ts-promise', () => {
               age: 24,
             }),
           });
+        case 'http://example.com/api/not-a-person':
+          return Promise.resolve({
+            json: () => ({}),
+          });
         case 'http://example.com/api/product':
           return Promise.resolve({
             json: () => ({
@@ -64,6 +68,32 @@ describe('io-ts-promise', () => {
         );
 
       return expect(result).to.eventually.equal('Tester is 24 years old');
+    });
+
+    it('provides identification of decode errors', () => {
+      const Person = t.type({
+        name: t.string,
+        age: t.number,
+      });
+
+      const result = fetch('http://example.com/api/not-a-person')
+        .then(response => response.json())
+        .then(tPromise.decode(Person))
+        .then(
+          typeSafeData =>
+            `${typeSafeData.name} is ${typeSafeData.age} years old`,
+        )
+        .catch(error => {
+          if (tPromise.isDecodeError(error)) {
+            return 'Request failed due to invalid data.';
+          } else {
+            return 'Request failed due to network issues.';
+          }
+        });
+
+      return expect(result).to.eventually.equal(
+        'Request failed due to invalid data.',
+      );
     });
 
     it('provides creating custom types by extending existing types', () => {
@@ -169,9 +199,9 @@ describe('io-ts-promise', () => {
       const type = t.string;
       const value = 10;
 
-      return expect(tPromise.decode(type, value)).to.eventually.be.rejectedWith(
-        Error,
-      );
+      return expect(
+        tPromise.decode(type, value),
+      ).to.eventually.be.rejected.and.instanceOf(tPromise.DecodeError);
     });
   });
 
@@ -187,9 +217,25 @@ describe('io-ts-promise', () => {
       const type = t.string;
       const value = 10;
 
-      return expect(tPromise.decode(type)(value)).to.eventually.be.rejectedWith(
-        Error,
+      return expect(
+        tPromise.decode(type)(value),
+      ).to.eventually.be.rejected.and.instanceOf(tPromise.DecodeError);
+    });
+  });
+
+  describe('isDecodeError', () => {
+    it('identifies errors produced by decode', () => {
+      const failingPromise = tPromise.decode(t.string, 10);
+
+      return expect(failingPromise).to.eventually.be.rejected.and.satisfy(
+        tPromise.isDecodeError,
       );
+    });
+
+    it('identifies other errors', () => {
+      const nonDecodeError = new Error('test-error');
+
+      expect(tPromise.isDecodeError(nonDecodeError)).to.equal(false);
     });
   });
 
