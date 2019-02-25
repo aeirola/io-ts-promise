@@ -40,6 +40,26 @@ fetch('http://example.com/api/person')
   );
 ```
 
+#### Identifying errors
+
+When building long promise chains, you might handle errors somewhere else than directly next to the function producing the error. In these cases you might want to identify the errors in order to act accordingly. Errors produced by the `decode` function due to incompatible data can be identified by either using the type guard `tPromise.isDecodeError(error)`, or checking the error type with `error instanceof tPromise.DecodeError`. For example:
+
+```typescript
+fetch('http://example.com/api/not-a-person')
+  .then(response => response.json())
+  .then(tPromise.decode(Person))
+  .then(typeSafeData =>
+    console.log(`${typeSafeData.name} is ${typeSafeData.age} years old`),
+  )
+  .catch(error => {
+    if (tPromise.isDecodeError(error)) {
+      console.error('Request failed due to invalid data.');
+    } else {
+      console.error('Request failed due to network issues.');
+    }
+  });
+```
+
 ### Creating custom types
 
 Writing custom `io-ts` types is a bit cryptic, so this library provides a simpler way of extending existing `io-ts` types, or creating your own from scratch. All you need is a function which decodes incoming values, and another which encodes it back.
