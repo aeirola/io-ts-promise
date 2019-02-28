@@ -19,7 +19,8 @@
     "lint:typescript": "tsc --noEmit",
     "test:js": "mocha -r ts-node/register test/*.ts",
     "build": "tsc",
-    "prepublish": "npm run build"
+    "installPeerDepenencies": "npm install --no-save io-ts@1.x",
+    "prepublish": "npm run installPeerDepenencies && npm run build"
   },
   "repository": {
     "type": "git",
@@ -32,8 +33,10 @@
   },
   "homepage": "https://github.com/aeirola/io-ts-promise",
   "dependencies": {
-    "deep-equal": "^1.0.1",
-    "io-ts": "^1.8.2"
+    "deep-equal": "^1.0.1"
+  },
+  "peerDependencies": {
+    "io-ts": "1.x"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
