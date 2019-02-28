@@ -12,7 +12,6 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "pretest": "",
     "test": "npm run lint && npm run test:js",
     "lint": "npm run lint:prettier && npm run lint:tslint && npm run lint:typescript",
     "lint:prettier": "prettier --list-different 'src/*.ts' 'test/*.ts'",
