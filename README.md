@@ -40,6 +40,14 @@ fetch('http://example.com/api/person')
   );
 ```
 
+As with any Promise-based API, you can also use `tPromise.decode` in async code as following
+
+```typescript
+const response = await fetch('http://example.com/api/person');
+const typeSafeData = await tPromise.decode(Person, response.json());
+console.log(`${typeSafeData.name} is ${typeSafeData.age} years old`);
+```
+
 #### Identifying errors
 
 When building long promise chains, you might handle errors somewhere else than directly next to the function producing the error. In these cases you might want to identify the errors in order to act accordingly. Errors produced by the `decode` function due to incompatible data can be identified by either using the type guard `tPromise.isDecodeError(error)`, or checking the error type with `error instanceof tPromise.DecodeError`. For example:
