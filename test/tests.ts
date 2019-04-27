@@ -70,6 +70,19 @@ describe('io-ts-promise', () => {
       return expect(result).to.eventually.equal('Tester is 24 years old');
     });
 
+    it('provides async based decoding', async () => {
+      const Person = t.type({
+        name: t.string,
+        age: t.number,
+      });
+
+      const response = await fetch('http://example.com/api/person');
+      const typeSafeData = await tPromise.decode(Person, response.json());
+      const result = `${typeSafeData.name} is ${typeSafeData.age} years old`;
+
+      expect(result).to.equal('Tester is 24 years old');
+    });
+
     it('provides identification of decode errors', () => {
       const Person = t.type({
         name: t.string,
