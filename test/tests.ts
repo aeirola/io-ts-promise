@@ -133,9 +133,7 @@ describe('io-ts-promise', () => {
         .then(tPromise.decode(Product))
         .then(
           typeSafeData =>
-            `${typeSafeData.name} costs ${typeSafeData.price.amount} ${
-              typeSafeData.price.currency
-            }`,
+            `${typeSafeData.name} costs ${typeSafeData.price.amount} ${typeSafeData.price.currency}`,
         );
 
       return expect(result).to.eventually.equal('Product costs 10 EUR');
@@ -170,9 +168,7 @@ describe('io-ts-promise', () => {
         .then(tPromise.decode(Product))
         .then(
           typeSafeData =>
-            `${typeSafeData.name} costs ${typeSafeData.price.amount} ${
-              typeSafeData.price.currency
-            }`,
+            `${typeSafeData.name} costs ${typeSafeData.price.amount} ${typeSafeData.price.currency}`,
         );
 
       return expect(result).to.eventually.equal('Product costs 10 EUR');
