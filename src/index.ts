@@ -1,4 +1,5 @@
 import deepEqual from 'deep-equal';
+import { either, fold } from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
 import { PathReporter } from 'io-ts/lib/PathReporter';
 
@@ -36,12 +37,10 @@ export function decode<Output, Input>(
         Promise<Output>
       >(null, type);
     default:
-      return type
-        .decode(value || arguments[2])
-        .fold(
-          errors => Promise.reject(new DecodeError(errors)),
-          decodedValue => Promise.resolve(decodedValue),
-        );
+      return fold<t.Errors, Output, Promise<Output>>(
+        errors => Promise.reject(new DecodeError(errors)),
+        decodedValue => Promise.resolve(decodedValue),
+      )(type.decode(value || arguments[2]));
   }
 }
 
@@ -156,7 +155,7 @@ export function extendDecoder<Input, Output>(
     value: unknown,
     context: t.Context,
   ) => {
-    return baseDecoder.validate(value, context).chain(chainedValue => {
+    return either.chain(baseDecoder.validate(value, context), chainedValue => {
       try {
         return t.success(decode(chainedValue));
       } catch (e) {

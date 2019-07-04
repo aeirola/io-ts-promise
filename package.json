@@ -19,8 +19,8 @@
     "lint:typescript": "tsc --noEmit",
     "test:js": "mocha -r ts-node/register test/*.ts",
     "build": "tsc",
-    "installPeerDepenencies": "npm install --no-save io-ts@1.x",
-    "prepublish": "npm run installPeerDepenencies && npm run build"
+    "installPeerDependencies": "npm install --no-save io-ts@2.x fp-ts@2.x",
+    "prepublish": "npm run installPeerDependencies && npm run build"
   },
   "repository": {
     "type": "git",
@@ -36,7 +36,8 @@
     "deep-equal": "^1.0.1"
   },
   "peerDependencies": {
-    "io-ts": "1.x"
+    "fp-ts": "2.x",
+    "io-ts": "2.x"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
@@ -45,7 +46,6 @@
     "@types/mocha": "^5.2.7",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "fp-ts": "^1.19.0",
     "mocha": "^6.1.4",
     "prettier": "^1.18.2",
     "ts-node": "^8.3.0",

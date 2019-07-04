@@ -22,16 +22,23 @@ interface Utils {
 export default function(chai: Chai, utils: Utils) {
   const Assertion = chai.Assertion;
 
+  function isObject(value: unknown): value is object {
+    return typeof value === 'object' && value !== null;
+  }
+
   function isEither<L, A>(value: unknown): value is Either.Either<L, A> {
-    return value instanceof Either.Left || value instanceof Either.Right;
+    if (!isObject(value)) {
+      return false;
+    }
+    return Either.isLeft(value as any) || Either.isRight(value as any);
   }
 
   Assertion.addProperty('left', function() {
     const obj = this._obj;
     let isLeft: boolean = false;
 
-    if (isEither(obj) && obj.isLeft()) {
-      utils.flag(this, 'object', obj.value);
+    if (isEither(obj) && Either.isLeft(obj)) {
+      utils.flag(this, 'object', obj.left);
       isLeft = true;
     }
 
@@ -46,8 +53,8 @@ export default function(chai: Chai, utils: Utils) {
     const obj = this._obj;
     let isRight: boolean = false;
 
-    if (isEither(obj) && obj.isRight()) {
-      utils.flag(this, 'object', obj.value);
+    if (isEither(obj) && Either.isRight(obj)) {
+      utils.flag(this, 'object', obj.right);
       isRight = true;
     }
 
