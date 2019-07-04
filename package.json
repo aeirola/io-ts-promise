@@ -19,8 +19,8 @@
     "lint:typescript": "tsc --noEmit",
     "test:js": "mocha -r ts-node/register test/*.ts",
     "build": "tsc",
-    "installPeerDepenencies": "npm install --no-save io-ts@2.x fp-ts@2.x",
-    "prepublish": "npm run installPeerDepenencies && npm run build"
+    "installPeerDependencies": "npm install --no-save io-ts@2.x fp-ts@2.x",
+    "prepublish": "npm run installPeerDependencies && npm run build"
   },
   "repository": {
     "type": "git",
