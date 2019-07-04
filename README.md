@@ -11,7 +11,7 @@ It provides the following:
 
 ### Promise chain decoding
 
-Decode data from Promise based APIs, without having to worry about how to retrieve data from the [Either](https://github.com/gcanti/fp-ts/blob/master/docs/Either.md) values returned by the `io-ts` types.
+Decode data from Promise based APIs, without having to worry about how to retrieve data from the [Either](https://gcanti.github.io/fp-ts/modules/Either.ts.html) values returned by the `io-ts` types.
 
 ```typescript
 import * as t from 'io-ts';
