@@ -33,24 +33,24 @@
   },
   "homepage": "https://github.com/aeirola/io-ts-promise",
   "dependencies": {
-    "deep-equal": "^1.0.1"
+    "deep-equal": "^1.1.0"
   },
   "peerDependencies": {
     "fp-ts": "2.x",
     "io-ts": "2.x"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/chai-as-promised": "^7.1.0",
-    "@types/deep-equal": "^1.0.1",
-    "@types/mocha": "^5.2.7",
-    "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
-    "mocha": "^6.1.4",
-    "prettier": "^1.18.2",
-    "ts-node": "^8.3.0",
-    "tslint": "^5.17.0",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.5.2"
+    "@types/chai": "4.2.3",
+    "@types/chai-as-promised": "7.1.2",
+    "@types/deep-equal": "1.0.1",
+    "@types/mocha": "5.2.7",
+    "chai": "4.2.0",
+    "chai-as-promised": "7.1.1",
+    "mocha": "6.2.1",
+    "prettier": "1.18.2",
+    "ts-node": "8.4.1",
+    "tslint": "5.20.0",
+    "tslint-config-prettier": "1.18.0",
+    "typescript": "3.6.3"
   }
 }
