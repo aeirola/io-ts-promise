@@ -40,7 +40,7 @@ export function decode<Output, Input>(
       return fold<t.Errors, Output, Promise<Output>>(
         errors => Promise.reject(new DecodeError(errors)),
         decodedValue => Promise.resolve(decodedValue),
-      )(type.decode(value || arguments[2]));
+      )(type.decode(value === undefined ? arguments[2] : value));
   }
 }
 
