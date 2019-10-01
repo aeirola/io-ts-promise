@@ -225,6 +225,20 @@ describe('io-ts-promise', () => {
       return expect(tPromise.decode(type, value)).to.eventually.equal(value);
     });
 
+    it('resolves promise on falsy undefined', () => {
+      const type = t.undefined;
+      const value = undefined;
+
+      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+    });
+
+    it('resolves promise on falsy null', () => {
+      const type = t.null;
+      const value = null;
+
+      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+    });
+
     it('rejects promise on invalid data', () => {
       const type = t.string;
       const value = 10;
