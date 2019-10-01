@@ -1,25 +1,8 @@
 /// <reference path="./chai-fp-ts.d.ts"/>
+
 import * as Either from 'fp-ts/lib/Either';
 
-interface Chai {
-  Assertion: Assertion;
-}
-
-interface Assertion {
-  _obj: unknown;
-  addProperty: (name: string, getter: (this: Assertion) => void) => void;
-  assert: (
-    result: boolean,
-    errorMessage: string,
-    errorMessageNegated: string,
-  ) => void;
-}
-
-interface Utils {
-  flag: (assertion: Assertion, key: string, value?: unknown) => void;
-}
-
-export default function(chai: Chai, utils: Utils) {
+const chaiFpTs: Chai.ChaiPlugin = (chai, utils) => {
   const Assertion = chai.Assertion;
 
   function isObject(value: unknown): value is object {
@@ -46,6 +29,7 @@ export default function(chai: Chai, utils: Utils) {
       isLeft,
       `expected #{this} to be Left`,
       `expected #{this} to not be Left`,
+      undefined,
     );
   });
 
@@ -62,6 +46,9 @@ export default function(chai: Chai, utils: Utils) {
       isRight,
       `expected #{this} to be Right`,
       `expected #{this} to not be Right`,
+      undefined,
     );
   });
-}
+};
+
+export default chaiFpTs;
