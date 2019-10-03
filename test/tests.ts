@@ -204,6 +204,41 @@ describe('io-ts-promise', () => {
       return expect(tPromise.decode(type, value)).to.eventually.equal(value);
     });
 
+    it('resolves promise on falsy string', () => {
+      const type = t.string;
+      const value = '';
+
+      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+    });
+
+    it('resolves promise on falsy boolean', () => {
+      const type = t.boolean;
+      const value = false;
+
+      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+    });
+
+    it('resolves promise on falsy number', () => {
+      const type = t.number;
+      const value = 0;
+
+      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+    });
+
+    it('resolves promise on falsy undefined', () => {
+      const type = t.undefined;
+      const value = undefined;
+
+      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+    });
+
+    it('resolves promise on falsy null', () => {
+      const type = t.null;
+      const value = null;
+
+      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+    });
+
     it('rejects promise on invalid data', () => {
       const type = t.string;
       const value = 10;
