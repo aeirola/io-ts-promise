@@ -55,14 +55,14 @@ export function isDecodeError(error: unknown): error is DecodeError {
  * Custom error class which is rejected by the @see decode function
  * when decoding fails due to invalid data.
  */
-export class DecodeError implements Error {
+export class DecodeError extends Error {
   public name = 'DecodeError';
-  public message: string;
   public errors: t.Errors;
 
   constructor(errors: t.Errors) {
-    this.message = PathReporter.report(t.failures(errors)).join('\n');
+    super(PathReporter.report(t.failures(errors)).join('\n'));
     this.errors = errors;
+    Object.setPrototypeOf(this, DecodeError.prototype);
   }
 }
 
