@@ -14,11 +14,12 @@ jobs:
         io-ts-version: [~2.0.0, ~2.1.0, ~2.2.0]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
       - run: npm install
       - run: npm install --no-save io-ts@${{ matrix.io-ts-version }}
       - run: npm run build --if-present
