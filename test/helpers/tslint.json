@@ -1,6 +1,0 @@
-{
-  "rules": {
-    "no-namespace": false,
-    "no-reference": false
-  }
-}

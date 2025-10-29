@@ -13,12 +13,12 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "test": "npm run lint && npm run test:js",
-    "lint": "npm run lint:prettier && npm run lint:tslint && npm run lint:typescript",
+    "lint": "npm run lint:prettier && npm run lint:eslint && npm run lint:typescript",
     "lint:prettier": "prettier --list-different 'src/*.ts' 'test/*.ts'",
-    "lint:tslint": "tslint-config-prettier-check ./tslint.json && tslint 'src/*.ts' 'test/*.ts'",
+    "lint:eslint": "eslint 'src/*.ts' 'test/*.ts'",
     "lint:typescript": "tsc --noEmit",
-    "test:js": "mocha -r ts-node/register test/*.ts",
-    "build": "tsc",
+    "test:js": "vitest run",
+    "build": "tsc -p ./tsconfig.build.json",
     "installPeerDependencies": "npm install --no-save io-ts@2.x fp-ts@2.x",
     "prepublish": "npm run installPeerDependencies && npm run build"
   },
@@ -40,17 +40,13 @@
     "io-ts": "2.x"
   },
   "devDependencies": {
-    "@types/chai": "4.2.3",
-    "@types/chai-as-promised": "7.1.2",
     "@types/deep-equal": "1.0.1",
-    "@types/mocha": "5.2.7",
-    "chai": "4.2.0",
-    "chai-as-promised": "7.1.1",
-    "mocha": "6.2.1",
-    "prettier": "1.18.2",
-    "ts-node": "8.4.1",
-    "tslint": "5.20.0",
-    "tslint-config-prettier": "1.18.0",
-    "typescript": "3.6.3"
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
+    "eslint": "^8.38.0",
+    "prettier": "^2.7.1",
+    "typescript": "~5.1.3",
+    "vite": "^4.3.3",
+    "vitest": "^0.31.0"
   }
 }
