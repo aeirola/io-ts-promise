@@ -1,5 +1,5 @@
 import deepEqual from 'deep-equal';
-import { either, fold } from 'fp-ts/lib/Either';
+import * as Either from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
 import { PathReporter } from 'io-ts/lib/PathReporter';
 
@@ -32,14 +32,14 @@ export function decode<Output, Input>(
     case 1:
       return decode.bind<
         null,
-        t.Decoder<Input, Output>,
+        [t.Decoder<Input, Output>],
         [Input],
         Promise<Output>
       >(null, type);
     default:
-      return fold<t.Errors, Output, Promise<Output>>(
-        errors => Promise.reject(new DecodeError(errors)),
-        decodedValue => Promise.resolve(decodedValue),
+      return Either.fold<t.Errors, Output, Promise<Output>>(
+        (errors) => Promise.reject(new DecodeError(errors)),
+        (decodedValue) => Promise.resolve(decodedValue),
       )(type.decode(value || arguments[1]));
   }
 }
@@ -155,13 +155,22 @@ export function extendDecoder<Input, Output>(
     value: unknown,
     context: t.Context,
   ) => {
-    return either.chain(baseDecoder.validate(value, context), chainedValue => {
-      try {
-        return t.success(decode(chainedValue));
-      } catch (e) {
-        return t.failure(value, context, e);
-      }
-    });
+    return Either.flatMap(
+      baseDecoder.validate(value, context),
+      (chainedValue) => {
+        try {
+          return t.success(decode(chainedValue));
+        } catch (e) {
+          if (e instanceof Error) {
+            return t.failure(value, context, e.message || undefined);
+          } else if (typeof e === 'string') {
+            return t.failure(value, context, e);
+          } else {
+            return t.failure(value, context);
+          }
+        }
+      },
+    );
   };
 
   return new Decoder<unknown, Output>(

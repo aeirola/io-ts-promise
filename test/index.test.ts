@@ -1,12 +1,8 @@
-import { expect, use } from 'chai';
-import chatAsPromised from 'chai-as-promised';
+import { describe, expect, it } from 'vitest';
+
 import * as t from 'io-ts';
-import 'mocha';
 
-import chaiFpTs from './helpers/chai-fp-ts';
-
-use(chatAsPromised);
-use(chaiFpTs);
+import './helpers/vitest-fp-ts';
 
 import * as tPromise from '../src';
 
@@ -44,13 +40,13 @@ describe('io-ts-promise', () => {
       });
 
       const result = fetch('http://example.com/api/person')
-        .then(response => tPromise.decode(Person, response.json()))
+        .then((response) => tPromise.decode(Person, response.json()))
         .then(
-          typeSafeData =>
+          (typeSafeData) =>
             `${typeSafeData.name} is ${typeSafeData.age} years old`,
         );
 
-      return expect(result).to.eventually.equal('Tester is 24 years old');
+      return expect(result).resolves.toEqual('Tester is 24 years old');
     });
 
     it('provides promise chain decoding with carrying', () => {
@@ -60,14 +56,14 @@ describe('io-ts-promise', () => {
       });
 
       const result = fetch('http://example.com/api/person')
-        .then(response => response.json())
+        .then((response) => response.json())
         .then(tPromise.decode(Person))
         .then(
-          typeSafeData =>
+          (typeSafeData) =>
             `${typeSafeData.name} is ${typeSafeData.age} years old`,
         );
 
-      return expect(result).to.eventually.equal('Tester is 24 years old');
+      return expect(result).resolves.toEqual('Tester is 24 years old');
     });
 
     it('provides async based decoding', async () => {
@@ -80,7 +76,7 @@ describe('io-ts-promise', () => {
       const typeSafeData = await tPromise.decode(Person, response.json());
       const result = `${typeSafeData.name} is ${typeSafeData.age} years old`;
 
-      expect(result).to.equal('Tester is 24 years old');
+      expect(result).toEqual('Tester is 24 years old');
     });
 
     it('provides identification of decode errors', () => {
@@ -90,13 +86,13 @@ describe('io-ts-promise', () => {
       });
 
       const result = fetch('http://example.com/api/not-a-person')
-        .then(response => response.json())
+        .then((response) => response.json())
         .then(tPromise.decode(Person))
         .then(
-          typeSafeData =>
+          (typeSafeData) =>
             `${typeSafeData.name} is ${typeSafeData.age} years old`,
         )
-        .catch(error => {
+        .catch((error) => {
           if (tPromise.isDecodeError(error)) {
             return 'Request failed due to invalid data.';
           } else {
@@ -104,7 +100,7 @@ describe('io-ts-promise', () => {
           }
         });
 
-      return expect(result).to.eventually.equal(
+      return expect(result).resolves.toEqual(
         'Request failed due to invalid data.',
       );
     });
@@ -119,7 +115,7 @@ describe('io-ts-promise', () => {
           amount: value,
         }),
         // Encode function does the reverse
-        price => price.amount,
+        (price) => price.amount,
       );
 
       // And use them as part of other types
@@ -129,14 +125,14 @@ describe('io-ts-promise', () => {
       });
 
       const result = fetch('http://example.com/api/product')
-        .then(response => response.json())
+        .then((response) => response.json())
         .then(tPromise.decode(Product))
         .then(
-          typeSafeData =>
+          (typeSafeData) =>
             `${typeSafeData.name} costs ${typeSafeData.price.amount} ${typeSafeData.price.currency}`,
         );
 
-      return expect(result).to.eventually.equal('Product costs 10 EUR');
+      return expect(result).resolves.toEqual('Product costs 10 EUR');
     });
 
     it('provides creating custom types from scratch', () => {
@@ -154,7 +150,7 @@ describe('io-ts-promise', () => {
           }
         },
         // Encode function does the reverse
-        price => price.amount,
+        (price) => price.amount,
       );
 
       // And use them as part of other types
@@ -164,14 +160,14 @@ describe('io-ts-promise', () => {
       });
 
       const result = fetch('http://example.com/api/product')
-        .then(response => response.json())
+        .then((response) => response.json())
         .then(tPromise.decode(Product))
         .then(
-          typeSafeData =>
+          (typeSafeData) =>
             `${typeSafeData.name} costs ${typeSafeData.price.amount} ${typeSafeData.price.currency}`,
         );
 
-      return expect(result).to.eventually.equal('Product costs 10 EUR');
+      return expect(result).resolves.toEqual('Product costs 10 EUR');
     });
 
     it('provides creating custom decoders by extending existing io-ts types', () => {
@@ -180,19 +176,19 @@ describe('io-ts-promise', () => {
         age: t.number,
       });
 
-      const ExplicitPerson = tPromise.extendDecoder(Person, person => ({
+      const ExplicitPerson = tPromise.extendDecoder(Person, (person) => ({
         firstName: person.name,
         ageInYears: person.age,
       }));
 
       const result = fetch('http://example.com/api/person')
-        .then(response => tPromise.decode(ExplicitPerson, response.json()))
+        .then((response) => tPromise.decode(ExplicitPerson, response.json()))
         .then(
-          typeSafeData =>
+          (typeSafeData) =>
             `${typeSafeData.firstName} is ${typeSafeData.ageInYears} years old`,
         );
 
-      return expect(result).to.eventually.equal('Tester is 24 years old');
+      return expect(result).resolves.toEqual('Tester is 24 years old');
     });
   });
 
@@ -201,51 +197,51 @@ describe('io-ts-promise', () => {
       const type = t.string;
       const value = 'hello there';
 
-      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+      return expect(tPromise.decode(type, value)).resolves.toEqual(value);
     });
 
     it('resolves promise on falsy string', () => {
       const type = t.string;
       const value = '';
 
-      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+      return expect(tPromise.decode(type, value)).resolves.toEqual(value);
     });
 
     it('resolves promise on falsy boolean', () => {
       const type = t.boolean;
       const value = false;
 
-      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+      return expect(tPromise.decode(type, value)).resolves.toEqual(value);
     });
 
     it('resolves promise on falsy number', () => {
       const type = t.number;
       const value = 0;
 
-      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+      return expect(tPromise.decode(type, value)).resolves.toEqual(value);
     });
 
     it('resolves promise on falsy undefined', () => {
       const type = t.undefined;
       const value = undefined;
 
-      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+      return expect(tPromise.decode(type, value)).resolves.toEqual(value);
     });
 
     it('resolves promise on falsy null', () => {
       const type = t.null;
       const value = null;
 
-      return expect(tPromise.decode(type, value)).to.eventually.equal(value);
+      return expect(tPromise.decode(type, value)).resolves.toEqual(value);
     });
 
     it('rejects promise on invalid data', () => {
       const type = t.string;
       const value = 10;
 
-      return expect(
-        tPromise.decode(type, value),
-      ).to.eventually.be.rejected.and.instanceOf(tPromise.DecodeError);
+      return expect(tPromise.decode(type, value)).rejects.toBeInstanceOf(
+        tPromise.DecodeError,
+      );
     });
   });
 
@@ -254,16 +250,16 @@ describe('io-ts-promise', () => {
       const type = t.string;
       const value = 'hello there';
 
-      return expect(tPromise.decode(type)(value)).to.eventually.equal(value);
+      return expect(tPromise.decode(type)(value)).resolves.toEqual(value);
     });
 
     it('rejects promise on invalid data', () => {
       const type = t.string;
       const value = 10;
 
-      return expect(
-        tPromise.decode(type)(value),
-      ).to.eventually.be.rejected.and.instanceOf(tPromise.DecodeError);
+      return expect(tPromise.decode(type)(value)).rejects.toBeInstanceOf(
+        tPromise.DecodeError,
+      );
     });
   });
 
@@ -271,15 +267,13 @@ describe('io-ts-promise', () => {
     it('identifies errors produced by decode', () => {
       const failingPromise = tPromise.decode(t.string, 10);
 
-      return expect(failingPromise).to.eventually.be.rejected.and.satisfy(
-        tPromise.isDecodeError,
-      );
+      return expect(failingPromise).rejects.toSatisfy(tPromise.isDecodeError);
     });
 
     it('identifies other errors', () => {
       const nonDecodeError = new Error('test-error');
 
-      expect(tPromise.isDecodeError(nonDecodeError)).to.equal(false);
+      expect(tPromise.isDecodeError(nonDecodeError)).toEqual(false);
     });
   });
 
@@ -292,10 +286,10 @@ describe('io-ts-promise', () => {
             value,
           };
         } else {
-          throw new Error('Input is not a number');
+          throw new Error();
         }
       },
-      value => value.value,
+      (value) => value.value,
     );
 
     runPriceTypeTests(price);
@@ -308,7 +302,7 @@ describe('io-ts-promise', () => {
         currency: 'EUR',
         value,
       }),
-      value => value.value,
+      (value) => value.value,
     );
 
     runPriceTypeTests(price);
@@ -320,7 +314,7 @@ describe('io-ts-promise', () => {
     it('produces type which decodes valid values', () => {
       const result = price.decode(10);
 
-      expect(result).to.be.right.and.deep.equal({
+      expect(result).toEqualRight({
         currency: 'EUR',
         value: 10,
       });
@@ -337,7 +331,7 @@ describe('io-ts-promise', () => {
         price: 99,
       });
 
-      expect(result).to.right.and.deep.equal({
+      expect(result).toEqualRight({
         name: 'thing',
         price: {
           currency: 'EUR',
@@ -349,7 +343,12 @@ describe('io-ts-promise', () => {
     it('fails to decode invalid values', () => {
       const result = price.decode('10€');
 
-      expect(result).to.be.left.and.instanceOf(Array);
+      expect(result).toEqualLeft([
+        {
+          context: expect.anything(),
+          value: '10€',
+        },
+      ]);
     });
 
     it('produces type which identifies matching values with typeguard', () => {
@@ -358,25 +357,25 @@ describe('io-ts-promise', () => {
           currency: 'EUR',
           value: 10,
         }),
-      ).to.equal(true);
+      ).toEqual(true);
     });
 
     it('produces type which identifies nonmatching values with typeguard', () => {
-      expect(price.is('10€')).to.equal(false);
-      expect(price.is(10)).to.equal(false);
+      expect(price.is('10€')).toEqual(false);
+      expect(price.is(10)).toEqual(false);
 
       expect(
         price.is({
           sum: 10,
         }),
-      ).to.equal(false);
+      ).toEqual(false);
 
       expect(
         price.is({
           currency: 'USD',
           value: 10,
         }),
-      ).to.equal(false);
+      ).toEqual(false);
     });
   }
 
@@ -388,11 +387,11 @@ describe('io-ts-promise', () => {
           value,
         };
       } else {
-        throw new Error('Input is not a number');
+        throw new Error();
       }
     });
 
-    runPriceDecoerTests(price);
+    runPriceDecoderTests(price);
   });
 
   describe('extendDecoder', () => {
@@ -401,10 +400,10 @@ describe('io-ts-promise', () => {
       value,
     }));
 
-    runPriceDecoerTests(price);
+    runPriceDecoderTests(price);
   });
 
-  function runPriceDecoerTests(
+  function runPriceDecoderTests(
     price: t.Decoder<
       unknown,
       {
@@ -416,7 +415,7 @@ describe('io-ts-promise', () => {
     it('produces decoder which succeeds to decode valid values', () => {
       const result = price.decode(10);
 
-      expect(result).to.be.right.and.deep.equal({
+      expect(result).toEqualRight({
         currency: 'EUR',
         value: 10,
       });
@@ -425,7 +424,12 @@ describe('io-ts-promise', () => {
     it('produces decoder which fails to decode invalid values', () => {
       const result = price.decode('10€');
 
-      expect(result).to.be.left.and.instanceOf(Array);
+      expect(result).toEqualLeft([
+        {
+          context: expect.anything(),
+          value: '10€',
+        },
+      ]);
     });
   }
 });
