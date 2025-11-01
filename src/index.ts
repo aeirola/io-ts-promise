@@ -163,8 +163,6 @@ export function extendDecoder<Input, Output>(
         } catch (e) {
           if (e instanceof Error) {
             return t.failure(value, context, e.message || undefined);
-          } else if (typeof e === 'string') {
-            return t.failure(value, context, e);
           } else {
             return t.failure(value, context);
           }
@@ -180,7 +178,7 @@ export function extendDecoder<Input, Output>(
 }
 
 /**
- * Helper class implementing the Decoder intrface defined in io-ts.
+ * Helper class implementing the Decoder interface defined in io-ts.
  */
 class Decoder<I, A> extends t.Type<A, unknown, I> implements t.Decoder<I, A> {
   private static is(_: unknown): _ is any {

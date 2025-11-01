@@ -382,6 +382,9 @@ describe('io-ts-promise', () => {
   describe('createDecoder', () => {
     const price = tPromise.createDecoder((value: unknown) => {
       if (typeof value === 'number') {
+        if (value < 0) {
+          throw new Error('Price cannot be negative');
+        }
         return {
           currency: 'EUR',
           value,
@@ -395,14 +398,26 @@ describe('io-ts-promise', () => {
   });
 
   describe('extendDecoder', () => {
-    const price = tPromise.extendDecoder(t.number, (value: number) => ({
-      currency: 'EUR',
-      value,
-    }));
+    const price = tPromise.extendDecoder(t.number, (value: number) => {
+      if (value < 0) {
+        throw new Error('Price cannot be negative');
+      }
+      return {
+        currency: 'EUR',
+        value,
+      };
+    });
 
     runPriceDecoderTests(price);
   });
 
+  /**
+   * Test helper for price decoders that verifies basic decoding behavior and error message handling.
+   *
+   * @param price A decoder that must successfully decode positive numbers, fail without a custom error
+   *              message when given invalid types (e.g., strings like '10€'), and fail with the error
+   *              message 'Price cannot be negative' when given negative numbers.
+   */
   function runPriceDecoderTests(
     price: t.Decoder<
       unknown,
@@ -428,6 +443,18 @@ describe('io-ts-promise', () => {
         {
           context: expect.anything(),
           value: '10€',
+        },
+      ]);
+    });
+
+    it('produces decoder which fails with message on negative values', () => {
+      const result = price.decode(-5);
+
+      expect(result).toEqualLeft([
+        {
+          context: expect.anything(),
+          value: -5,
+          message: 'Price cannot be negative',
         },
       ]);
     });
