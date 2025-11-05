@@ -126,7 +126,7 @@ const Price = tPromise.createType(
   },
   // Encode function does the reverse
   price => price.amount,
-    // Type guard function
+  // Type guard function
   t.type({ currency: t.string, amount: t.number }).is,
 );
 ```
