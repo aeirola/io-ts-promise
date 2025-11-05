@@ -70,7 +70,7 @@ fetch('http://example.com/api/not-a-person')
 
 ### Creating custom types
 
-Writing custom `io-ts` types is a bit cryptic, so this library provides a simpler way of extending existing `io-ts` types, or creating your own from scratch. All you need is a function which decodes incoming values, and another which encodes it back.
+Writing custom `io-ts` types is a bit cryptic, so this library provides a simpler way of extending existing `io-ts` types, or creating your own from scratch. All you need are the functions for transforming values to and from the base type, as well as a type guard function to check whether a value adheres to the type.
 
 ```typescript
 import * as t from 'io-ts';
@@ -126,6 +126,8 @@ const Price = tPromise.createType(
   },
   // Encode function does the reverse
   price => price.amount,
+    // Type guard function
+  t.type({ currency: t.string, amount: t.number }).is,
 );
 ```
 
