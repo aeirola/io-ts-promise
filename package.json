@@ -7,10 +7,13 @@
     "promise"
   ],
   "files": [
-    "lib"
+    "lib",
+    "es6"
   ],
   "main": "lib/index.js",
+  "module": "es6/index.js",
   "typings": "lib/index.d.ts",
+  "sideEffects": false,
   "scripts": {
     "test": "npm run lint && npm run test:js",
     "lint": "npm run lint:prettier && npm run lint:eslint && npm run lint:typescript",
@@ -18,7 +21,9 @@
     "lint:eslint": "eslint 'src/*.ts' 'test/*.ts'",
     "lint:typescript": "tsc --noEmit",
     "test:js": "vitest run",
-    "build": "tsc -p ./tsconfig.build.json",
+    "build": "npm run build:cjs && npm run build:es6",
+    "build:cjs": "tsc -p ./tsconfig.build.json",
+    "build:es6": "tsc -p ./tsconfig.build-es6.json",
     "installPeerDependencies": "npm install --no-save io-ts@2.x fp-ts@2.x",
     "prepublish": "npm run installPeerDependencies && npm run build"
   },
