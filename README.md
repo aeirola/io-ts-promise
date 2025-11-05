@@ -86,6 +86,8 @@ const Price = tPromise.extendType(
   }),
   // Encode function does the reverse
   price => price.amount,
+  // Type guard function
+  t.type({ currency: t.string, amount: t.number }).is,
 );
 
 // And use them as part of other types

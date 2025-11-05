@@ -116,6 +116,8 @@ describe('io-ts-promise', () => {
         }),
         // Encode function does the reverse
         (price) => price.amount,
+        // Type guard function
+        t.type({ currency: t.string, amount: t.number }).is,
       );
 
       // And use them as part of other types
@@ -151,6 +153,8 @@ describe('io-ts-promise', () => {
         },
         // Encode function does the reverse
         (price) => price.amount,
+        // Type guard function
+        t.type({ currency: t.string, amount: t.number }).is,
       );
 
       // And use them as part of other types
@@ -290,6 +294,7 @@ describe('io-ts-promise', () => {
         }
       },
       (value) => value.value,
+      t.type({ currency: t.string, value: t.number }).is,
     );
 
     runPriceTypeTests(price);
@@ -303,6 +308,7 @@ describe('io-ts-promise', () => {
         value,
       }),
       (value) => value.value,
+      t.type({ currency: t.string, value: t.number }).is,
     );
 
     runPriceTypeTests(price);
@@ -372,8 +378,8 @@ describe('io-ts-promise', () => {
 
       expect(
         price.is({
-          currency: 'USD',
-          value: 10,
+          currency: 'EUR',
+          value: '10€',
         }),
       ).toEqual(false);
     });
