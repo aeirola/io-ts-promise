@@ -1,5 +1,9 @@
 # `io-ts-promise`
 
+> ℹ️ **Important**
+>
+> This package is no longer actively maintained as the io-ts package maintainer has [moved](https://dev.to/effect/a-bright-future-for-effect-455m) to work on [effect-ts](https://github.com/Effect-TS/effect). If you are looking for type validation for new projects you might want to look elsewhere, such as [effect/Schema](https://effect.website/docs/schema/introduction/) or [zod](https://zod.dev).
+
 While [`io-ts`](https://github.com/gcanti/io-ts) is a great library, it can be a bit alienating unless you are familiar with functional programming. So if you just want to ensure the runtime types for the data fetched from your API, you might be looking for something simpler. This is where `io-ts-promise` tries to help out.
 
 It provides the following:
@@ -23,8 +27,8 @@ const Person = t.type({
 });
 
 fetch('http://example.com/api/person')
-  .then(response => tPromise.decode(Person, response.json()))
-  .then(typeSafeData =>
+  .then((response) => tPromise.decode(Person, response.json()))
+  .then((typeSafeData) =>
     console.log(`${typeSafeData.name} is ${typeSafeData.age} years old`),
   );
 ```
@@ -33,9 +37,9 @@ fetch('http://example.com/api/person')
 
 ```typescript
 fetch('http://example.com/api/person')
-  .then(response => response.json())
+  .then((response) => response.json())
   .then(tPromise.decode(Person))
-  .then(typeSafeData =>
+  .then((typeSafeData) =>
     console.log(`${typeSafeData.name} is ${typeSafeData.age} years old`),
   );
 ```
@@ -54,12 +58,12 @@ When building long promise chains, you might handle errors somewhere else than d
 
 ```typescript
 fetch('http://example.com/api/not-a-person')
-  .then(response => response.json())
+  .then((response) => response.json())
   .then(tPromise.decode(Person))
-  .then(typeSafeData =>
+  .then((typeSafeData) =>
     console.log(`${typeSafeData.name} is ${typeSafeData.age} years old`),
   )
-  .catch(error => {
+  .catch((error) => {
     if (tPromise.isDecodeError(error)) {
       console.error('Request failed due to invalid data.');
     } else {
@@ -85,7 +89,7 @@ const Price = tPromise.extendType(
     amount: value,
   }),
   // Encode function does the reverse
-  price => price.amount,
+  (price) => price.amount,
   // Type guard function
   t.type({ currency: t.string, amount: t.number }).is,
 );
@@ -97,13 +101,11 @@ const Product = t.type({
 });
 
 fetch('http://example.com/api/product')
-  .then(response => response.json())
+  .then((response) => response.json())
   .then(tPromise.decode(Product))
-  .then(typeSafeData =>
+  .then((typeSafeData) =>
     console.log(
-      `${typeSafeData.name} costs ${typeSafeData.price.amount} ${
-        typeSafeData.price.currency
-      }`,
+      `${typeSafeData.name} costs ${typeSafeData.price.amount} ${typeSafeData.price.currency}`,
     ),
   );
 ```
@@ -111,16 +113,13 @@ fetch('http://example.com/api/product')
 Or if you are working with classes instead of objects:
 
 ```typescript
-import * as t from 'io-ts';
-import * as tPromise from 'io-ts-promise';
-
 // New type extending from existing type
 const RegExpType = tPromise.extendType(
   t.string,
   // Decode function takes in string and produces class
   (value: string) => new RegExp(value),
   // Encode function does the reverse
-  regexp => regexp.source,
+  (regexp) => regexp.source,
   // Type guard function
   (value): value is RegExp => value instanceof RegExp,
 );
@@ -143,7 +142,7 @@ const Price = tPromise.createType(
     }
   },
   // Encode function does the reverse
-  price => price.amount,
+  (price) => price.amount,
   // Type guard function
   t.type({ currency: t.string, amount: t.number }).is,
 );
@@ -153,9 +152,9 @@ const Price = tPromise.createType(
 
 In case you only need to read data into your application, you can use decoders which only convert data in one way.
 
-**Note:** `io-ts` doesn't support decoders in its nested types such as `t.array` or `t.type`. So only use decoders for top level data structures. The `decode` function of this library suppports both types and decoders.
+**Note:** `io-ts` stable features doesn't support decoders in its nested types such as `t.array` or `t.type`. So only use decoders for top level data structures. The `decode` function of this library supports both types and decoders. io-ts-promise is not compatible with the new experimental features in io-ts like [Decoder](https://github.com/gcanti/io-ts/blob/master/Decoder.md).
 
-The easiest way is to create a decoder is to extend and existing `io-ts` type, and only perform the desired additional modification on top of that.
+The easiest way to create a decoder is to extend an existing `io-ts` type, and only perform the desired additional modification on top of that.
 
 ```typescript
 import * as tPromise from 'io-ts-promise';
@@ -165,14 +164,14 @@ const Person = t.type({
   age: t.number,
 });
 
-const ExplicitPerson = tPromise.extendDecoder(Person, person => ({
+const ExplicitPerson = tPromise.extendDecoder(Person, (person) => ({
   firstName: person.name,
   ageInYears: person.age,
 }));
 
 fetch('http://example.com/api/person')
-  .then(response => tPromise.decode(ExplicitPerson, response.json()))
-  .then(typeSafeData =>
+  .then((response) => tPromise.decode(ExplicitPerson, response.json()))
+  .then((typeSafeData) =>
     console.log(
       `${typeSafeData.firstName} is ${typeSafeData.ageInYears} years old`,
     ),
