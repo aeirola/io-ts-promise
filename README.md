@@ -23,8 +23,8 @@ const Person = t.type({
 });
 
 fetch('http://example.com/api/person')
-  .then(response => tPromise.decode(Person, response.json()))
-  .then(typeSafeData =>
+  .then((response) => tPromise.decode(Person, response.json()))
+  .then((typeSafeData) =>
     console.log(`${typeSafeData.name} is ${typeSafeData.age} years old`),
   );
 ```
@@ -33,9 +33,9 @@ fetch('http://example.com/api/person')
 
 ```typescript
 fetch('http://example.com/api/person')
-  .then(response => response.json())
+  .then((response) => response.json())
   .then(tPromise.decode(Person))
-  .then(typeSafeData =>
+  .then((typeSafeData) =>
     console.log(`${typeSafeData.name} is ${typeSafeData.age} years old`),
   );
 ```
@@ -54,12 +54,12 @@ When building long promise chains, you might handle errors somewhere else than d
 
 ```typescript
 fetch('http://example.com/api/not-a-person')
-  .then(response => response.json())
+  .then((response) => response.json())
   .then(tPromise.decode(Person))
-  .then(typeSafeData =>
+  .then((typeSafeData) =>
     console.log(`${typeSafeData.name} is ${typeSafeData.age} years old`),
   )
-  .catch(error => {
+  .catch((error) => {
     if (tPromise.isDecodeError(error)) {
       console.error('Request failed due to invalid data.');
     } else {
@@ -85,7 +85,7 @@ const Price = tPromise.extendType(
     amount: value,
   }),
   // Encode function does the reverse
-  price => price.amount,
+  (price) => price.amount,
   // Type guard function
   t.type({ currency: t.string, amount: t.number }).is,
 );
@@ -97,13 +97,11 @@ const Product = t.type({
 });
 
 fetch('http://example.com/api/product')
-  .then(response => response.json())
+  .then((response) => response.json())
   .then(tPromise.decode(Product))
-  .then(typeSafeData =>
+  .then((typeSafeData) =>
     console.log(
-      `${typeSafeData.name} costs ${typeSafeData.price.amount} ${
-        typeSafeData.price.currency
-      }`,
+      `${typeSafeData.name} costs ${typeSafeData.price.amount} ${typeSafeData.price.currency}`,
     ),
   );
 ```
@@ -111,16 +109,13 @@ fetch('http://example.com/api/product')
 Or if you are working with classes instead of objects:
 
 ```typescript
-import * as t from 'io-ts';
-import * as tPromise from 'io-ts-promise';
-
 // New type extending from existing type
 const RegExpType = tPromise.extendType(
   t.string,
   // Decode function takes in string and produces class
   (value: string) => new RegExp(value),
   // Encode function does the reverse
-  regexp => regexp.source,
+  (regexp) => regexp.source,
   // Type guard function
   (value): value is RegExp => value instanceof RegExp,
 );
@@ -143,7 +138,7 @@ const Price = tPromise.createType(
     }
   },
   // Encode function does the reverse
-  price => price.amount,
+  (price) => price.amount,
   // Type guard function
   t.type({ currency: t.string, amount: t.number }).is,
 );
@@ -165,14 +160,14 @@ const Person = t.type({
   age: t.number,
 });
 
-const ExplicitPerson = tPromise.extendDecoder(Person, person => ({
+const ExplicitPerson = tPromise.extendDecoder(Person, (person) => ({
   firstName: person.name,
   ageInYears: person.age,
 }));
 
 fetch('http://example.com/api/person')
-  .then(response => tPromise.decode(ExplicitPerson, response.json()))
-  .then(typeSafeData =>
+  .then((response) => tPromise.decode(ExplicitPerson, response.json()))
+  .then((typeSafeData) =>
     console.log(
       `${typeSafeData.firstName} is ${typeSafeData.ageInYears} years old`,
     ),
