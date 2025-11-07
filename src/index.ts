@@ -1,4 +1,3 @@
-import deepEqual from 'deep-equal';
 import * as Either from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
 import { PathReporter } from 'io-ts/lib/PathReporter';
@@ -72,14 +71,16 @@ export class DecodeError extends Error {
  * @param decode Function that transforms unknown values to desired type,
  *               or throws an error if the tranformation is not supported.
  * @param encode Function that transforms decoded values back to the original encoded format.
+ * @param is Type guard function that checks if a value is of the decoded type.
  * @param name Optional name of the type, making decoding errors more informative.
  */
 export function createType<Output>(
   decode: (encodedValue: unknown) => Output,
   encode: (decodedValue: Output) => unknown,
+  is: t.Is<Output>,
   name?: string,
 ): t.Type<Output, unknown, unknown> {
-  return extendType(t.unknown, decode, encode, name);
+  return extendType(t.unknown, decode, encode, is, name);
 }
 
 /**
@@ -89,28 +90,17 @@ export function createType<Output>(
  * @param decode Function to transform output of `baseType` to desired value,
  *               or throws an error if the transformation is not supported.
  * @param encode Function to transform decoded type to back to `baseType` output.
+ * @param is Type guard function that checks if a value is of the decoded type.
  * @param name Optional name of the type, making decoding errors more informative.
  */
 export function extendType<Input, Output>(
   baseType: t.Type<Input, unknown>,
   decode: (encodedValue: Input) => Output,
   encode: (decodedValue: Output) => Input,
+  is: t.Is<Output>,
   name?: string,
 ): t.Type<Output, unknown, unknown> {
   const extendedDecoder = extendDecoder(baseType, decode);
-
-  const typeIs: t.Is<Output> = (value: unknown): value is Output => {
-    try {
-      const inputValue = encode(value as any);
-      if (!baseType.is(inputValue)) {
-        return false;
-      }
-      const decodedValue = decode(inputValue);
-      return deepEqual(value, decodedValue, { strict: true });
-    } catch {
-      return false;
-    }
-  };
 
   const typeEncode = (outputValue: Output): unknown => {
     return baseType.encode(encode(outputValue));
@@ -118,7 +108,7 @@ export function extendType<Input, Output>(
 
   return new t.Type(
     name || extendedDecoder.name,
-    typeIs,
+    is,
     extendedDecoder.validate,
     typeEncode,
   );

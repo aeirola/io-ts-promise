@@ -116,6 +116,8 @@ describe('io-ts-promise', () => {
         }),
         // Encode function does the reverse
         (price) => price.amount,
+        // Type guard function
+        t.type({ currency: t.string, amount: t.number }).is,
       );
 
       // And use them as part of other types
@@ -135,6 +137,25 @@ describe('io-ts-promise', () => {
       return expect(result).resolves.toEqual('Product costs 10 EUR');
     });
 
+    it('provides creating custom class by extending existing types', () => {
+      // New type extending from existing type
+      const RegExpType = tPromise.extendType(
+        t.string,
+        // Decode function takes in string and produces class
+        (value: string) => new RegExp(value),
+        // Encode function does the reverse
+        (regexp) => regexp.source,
+        // Type guard function
+        (value): value is RegExp => value instanceof RegExp,
+      );
+
+      const result = tPromise
+        .decode(RegExpType, '^test-[0-9]')
+        .then((regExp) => regExp.exec('test-5: regexps')?.[0]);
+
+      return expect(result).resolves.toEqual('test-5');
+    });
+
     it('provides creating custom types from scratch', () => {
       // Custom type from scratch
       const Price = tPromise.createType(
@@ -151,6 +172,8 @@ describe('io-ts-promise', () => {
         },
         // Encode function does the reverse
         (price) => price.amount,
+        // Type guard function
+        t.type({ currency: t.string, amount: t.number }).is,
       );
 
       // And use them as part of other types
@@ -290,6 +313,7 @@ describe('io-ts-promise', () => {
         }
       },
       (value) => value.value,
+      t.type({ currency: t.string, value: t.number }).is,
     );
 
     runPriceTypeTests(price);
@@ -303,6 +327,7 @@ describe('io-ts-promise', () => {
         value,
       }),
       (value) => value.value,
+      t.type({ currency: t.string, value: t.number }).is,
     );
 
     runPriceTypeTests(price);
@@ -372,8 +397,8 @@ describe('io-ts-promise', () => {
 
       expect(
         price.is({
-          currency: 'USD',
-          value: 10,
+          currency: 'EUR',
+          value: '10€',
         }),
       ).toEqual(false);
     });
