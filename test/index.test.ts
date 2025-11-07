@@ -137,6 +137,25 @@ describe('io-ts-promise', () => {
       return expect(result).resolves.toEqual('Product costs 10 EUR');
     });
 
+    it('provides creating custom class by extending existing types', () => {
+      // New type extending from existing type
+      const RegExpType = tPromise.extendType(
+        t.string,
+        // Decode function takes in string and produces class
+        (value: string) => new RegExp(value),
+        // Encode function does the reverse
+        (regexp) => regexp.source,
+        // Type guard function
+        (value): value is RegExp => value instanceof RegExp,
+      );
+
+      const result = tPromise
+        .decode(RegExpType, '^test-[0-9]')
+        .then((regExp) => regExp.exec('test-5: regexps')?.[0]);
+
+      return expect(result).resolves.toEqual('test-5');
+    });
+
     it('provides creating custom types from scratch', () => {
       // Custom type from scratch
       const Price = tPromise.createType(

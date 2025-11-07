@@ -108,6 +108,24 @@ fetch('http://example.com/api/product')
   );
 ```
 
+Or if you are working with classes instead of objects:
+
+```typescript
+import * as t from 'io-ts';
+import * as tPromise from 'io-ts-promise';
+
+// New type extending from existing type
+const RegExpType = tPromise.extendType(
+  t.string,
+  // Decode function takes in string and produces class
+  (value: string) => new RegExp(value),
+  // Encode function does the reverse
+  regexp => regexp.source,
+  // Type guard function
+  (value): value is RegExp => value instanceof RegExp,
+);
+```
+
 Alternatively, you can define the type from scratch, in which case the decoder will receive a value of `unknown` type to decode into desired runtime type.
 
 ```typescript
