@@ -154,7 +154,7 @@ In case you only need to read data into your application, you can use decoders w
 
 **Note:** `io-ts` stable features doesn't support decoders in its nested types such as `t.array` or `t.type`. So only use decoders for top level data structures. The `decode` function of this library suppports both types and decoders. io-ts-promise is not compatible with the new experimental features in io-ts like [Decoder](https://github.com/gcanti/io-ts/blob/master/Decoder.md).
 
-The easiest way is to create a decoder is to extend and existing `io-ts` type, and only perform the desired additional modification on top of that.
+The easiest way to create a decoder is to extend an existing `io-ts` type, and only perform the desired additional modification on top of that.
 
 ```typescript
 import * as tPromise from 'io-ts-promise';
