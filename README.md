@@ -152,7 +152,7 @@ const Price = tPromise.createType(
 
 In case you only need to read data into your application, you can use decoders which only convert data in one way.
 
-**Note:** `io-ts` stable features doesn't support decoders in its nested types such as `t.array` or `t.type`. So only use decoders for top level data structures. The `decode` function of this library suppports both types and decoders. io-ts-promise is not compatible with the new experimental features in io-ts like [Decoder](https://github.com/gcanti/io-ts/blob/master/Decoder.md).
+**Note:** `io-ts` stable features doesn't support decoders in its nested types such as `t.array` or `t.type`. So only use decoders for top level data structures. The `decode` function of this library supports both types and decoders. io-ts-promise is not compatible with the new experimental features in io-ts like [Decoder](https://github.com/gcanti/io-ts/blob/master/Decoder.md).
 
 The easiest way to create a decoder is to extend an existing `io-ts` type, and only perform the desired additional modification on top of that.
 
