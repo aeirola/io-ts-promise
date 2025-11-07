@@ -1,5 +1,9 @@
 # `io-ts-promise`
 
+> ℹ️ **Important**
+>
+> This package is no longer actively maintained as the io-ts package maintainer has [moved](https://dev.to/effect/a-bright-future-for-effect-455m) to work on [effect-ts](https://github.com/Effect-TS/effect). If you are looking for type validation for new projects you might want to look elsewhere, such as [effect/Schema](https://effect.website/docs/schema/introduction/) or [zod](https://zod.dev).
+
 While [`io-ts`](https://github.com/gcanti/io-ts) is a great library, it can be a bit alienating unless you are familiar with functional programming. So if you just want to ensure the runtime types for the data fetched from your API, you might be looking for something simpler. This is where `io-ts-promise` tries to help out.
 
 It provides the following:
